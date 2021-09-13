@@ -164,7 +164,7 @@ export async function createBranch(options: CreateBranchOptions) {
     owner,
     repo,
     sha,
-    ref: `heads/${branch}`,
+    ref: `refs/heads/${branch}`,
     headers: {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
