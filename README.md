@@ -1,6 +1,7 @@
 # GitHub Releaser
 
-> [GitHub CLI](https://cli.github.com) extension to simplify starting and closing releases in GitFlow-based projects.
+> [GitHub CLI](https://cli.github.com) extension to simplify starting and
+> closing releases in GitFlow-based projects.
 
 ## Installation
 
@@ -42,7 +43,7 @@ Shows the Pull Request number for an open release.
 
 <details>
   <summary>Click to expand the example</summary>
-  
+
 ```yaml
 name: Release
 
@@ -113,11 +114,13 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
 ```
+
 </details>
 
 ## Contributing
 
-Please, see [CONTRIBUTING.md](CONTRIBUTING.md) to learn how you can contribute to this repository. Every contribution is welcome!
+Please, see [CONTRIBUTING.md](CONTRIBUTING.md) to learn how you can contribute
+to this repository. Every contribution is welcome!
 
 ## License
 
