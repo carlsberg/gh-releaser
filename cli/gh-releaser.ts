@@ -1,4 +1,4 @@
-import { yargs } from "./deps.ts";
+import { getOwnerAndRepo, yargs } from "./deps.ts";
 import { version } from "../version.ts";
 import { startCommand } from "./cmd/start.ts";
 import { prCommand } from "./cmd/pr.ts";
@@ -6,9 +6,23 @@ import { prCommand } from "./cmd/pr.ts";
 export const DEFAULT_MAIN_BRANCH = "main";
 export const DEFAULT_DEVELOP_BRANCH = "develop";
 
+const { owner, repo } = await getOwnerAndRepo();
+
 yargs()
   .scriptName("gh-releaser")
   .alias("h", "help")
+  .option("owner", {
+    alias: "o",
+    type: "string",
+    default: owner,
+    description: "Owner of the repository",
+  })
+  .option("repo", {
+    alias: "r",
+    type: "string",
+    default: repo,
+    description: "Name of the repository",
+  })
   .command(
     "start <tag>",
     "Starts a new release",

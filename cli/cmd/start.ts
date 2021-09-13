@@ -6,6 +6,8 @@ import {
 } from "../deps.ts";
 
 export interface StartCommandArgs {
+  owner: string;
+  repo: string;
   tag: string;
   mainBranch: string;
   developBranch: string;
@@ -13,13 +15,12 @@ export interface StartCommandArgs {
 
 export async function startCommand(args: StartCommandArgs) {
   const {
+    owner,
+    repo,
     tag,
     mainBranch: mainBranchName,
     developBranch: developBranchName,
   } = args;
-
-  const owner = "crqra";
-  const repo = "gh-releaser-test";
 
   // Create release branch
   const releaseBranchName = `release/${tag}`;

@@ -2,9 +2,10 @@
 export {
   createBranch,
   createRelease,
+  findPullRequests,
   getBranch,
+  getOwnerAndRepo,
   openPullRequest,
-  findPullRequests
 } from "../lib/mod.ts";
 
 // x/yargs

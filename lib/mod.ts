@@ -293,3 +293,37 @@ export async function fetchGitHubToken() {
 
   return new TextDecoder().decode(await p.output());
 }
+
+export async function getOwnerAndRepo() {
+  return getRepoFromOrigin(await getRemoteOriginURL());
+}
+
+function getRepoFromOrigin(origin: string) {
+  const match = origin.match(/[a-z0-9-_]+\/[a-z0-9_-]+.git/g);
+
+  if (!match) {
+    throw new Error("Failed to get repo full name from git remote origin");
+  }
+
+  const [owner, repo] = match[0].replace(".git", "").split("/");
+
+  return { owner, repo };
+}
+
+async function getRemoteOriginURL() {
+  const p = Deno.run({
+    cmd: ["git", "remote", "get-url", "origin"],
+    stdout: "piped",
+    stderr: "piped",
+  });
+
+  const { code } = await p.status();
+
+  if (code !== 0) {
+    const error = new TextDecoder().decode(await p.stderrOutput());
+
+    throw new Error(`Failed to get git remote origin: ${error}`);
+  }
+
+  return new TextDecoder().decode(await p.output());
+}

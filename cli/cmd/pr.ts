@@ -1,9 +1,16 @@
 import { findPullRequests } from "../deps.ts";
 
-export async function prCommand() {
+export interface PRCommandArgs {
+  owner: string;
+  repo: string;
+}
+
+export async function prCommand(args: PRCommandArgs) {
+  const { owner, repo } = args;
+
   const pulls = await findPullRequests({
-    owner: "crqra",
-    repo: "gh-releaser-test",
+    owner,
+    repo,
     label: "gh-releaser",
   });
 
