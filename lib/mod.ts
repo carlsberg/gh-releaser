@@ -91,13 +91,13 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
   const pr = await resp.json();
 
   if (label) {
-    const addLabelsResp = await octono.request(
-      "POST /repos/{owner}/{repo}/issues/{issue_number}/labels",
+    // there's a known issue in Octono that causes this particular request
+    // to fail. using `fetch` as a temporary workaround
+    const addLabelsResp = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/issues/${pr.number}/labels`,
       {
-        owner,
-        repo,
-        issue_number: pr.number,
-        labels: [label],
+        method: "POST",
+        body: JSON.stringify({ labels: [label] }),
         headers: {
           authorization: `bearer ${await fetchGitHubToken()}`,
         },
