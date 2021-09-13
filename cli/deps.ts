@@ -4,6 +4,7 @@ export {
   createRelease,
   getBranch,
   openPullRequest,
+  findPullRequests
 } from "../lib/mod.ts";
 
 // x/yargs

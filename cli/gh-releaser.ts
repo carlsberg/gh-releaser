@@ -1,6 +1,7 @@
 import { yargs } from "./deps.ts";
 import { version } from "../version.ts";
 import { startCommand } from "./cmd/start.ts";
+import { prCommand } from "./cmd/pr.ts";
 
 export const DEFAULT_MAIN_BRANCH = "main";
 export const DEFAULT_DEVELOP_BRANCH = "develop";
@@ -10,7 +11,7 @@ yargs()
   .alias("h", "help")
   .command(
     "start <tag>",
-    "starts a new release",
+    "Starts a new release",
     (y: ReturnType<typeof yargs>) => {
       y.positional("tag", {
         type: "string",
@@ -31,6 +32,12 @@ yargs()
       });
     },
     startCommand,
+  )
+  .command(
+    "pr",
+    "Shows the open release's Pull Request number",
+    {},
+    prCommand,
   )
   .demandCommand(1)
   .version(version)
