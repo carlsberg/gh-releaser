@@ -3,16 +3,18 @@ import {
   getDraftReleaseByTag,
   getPullRequest,
   mergePullRequest,
+  openPullRequest,
   updateRelease,
 } from "../deps.ts";
 
 export interface CloseCommandArgs {
   owner: string;
   repo: string;
+  developBranch: string;
 }
 
 export async function closeCommand(args: CloseCommandArgs) {
-  const { owner, repo } = args;
+  const { owner, repo, developBranch } = args;
 
   const prs = await findPullRequests({ owner, repo, label: "gh-releaser" });
 
@@ -24,7 +26,8 @@ export async function closeCommand(args: CloseCommandArgs) {
   const pr = await getPullRequest({ owner, repo, number: prs[0].number });
 
   // Get current release branch name
-  const { head: { ref: releaseBranchName } } = pr;
+  const { head: { ref: releaseBranchName }, base: { ref: mainBranchName } } =
+    pr;
 
   const [_, tag] = releaseBranchName.split("/");
 
@@ -51,4 +54,27 @@ export async function closeCommand(args: CloseCommandArgs) {
   });
 
   console.log(`Published GitHub Release (${release.id}): ${release.html_url}`);
+
+  const syncPR = await openPullRequest({
+    owner,
+    repo,
+    title: `Sync ${mainBranchName} -> ${developBranch}`,
+    body: "",
+    base: developBranch,
+    head: mainBranchName,
+  });
+
+  console.log(
+    `Created Pull Request to sync ${mainBranchName} -> ${developBranch}: ${pr.html_url}`,
+  );
+
+  await mergePullRequest({
+    owner,
+    repo,
+    number: syncPR.number,
+    commit: { title: `release: sync ${mainBranchName} -> ${developBranch}` },
+  });
+
+  console.log(`Synced ${mainBranchName} -> ${developBranch}`);
+  console.log("Done!");
 }

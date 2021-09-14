@@ -49,7 +49,13 @@ yargs()
     },
     startCommand,
   )
-  .command("close", "Closes the open release", {}, closeCommand)
+  .command("close", "Closes the open release", {
+    "develop-branch": {
+      type: "string",
+      describe: "Repository's develop branch",
+      default: DEFAULT_DEVELOP_BRANCH,
+    },
+  }, closeCommand)
   .command(
     "update <tag>",
     "Updates the open release's tag",
