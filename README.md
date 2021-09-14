@@ -30,10 +30,10 @@ Closes an existing release.
 
 Updates the version for an open release.
 
-- Creates a new release branch for the new tag
-- Updates the GitHub Release name and tag
-- Updates the Pull Request to use the new branch
-- Deletes the old branch
+- Renames the existing release branch
+- Closes old Pull Request
+- Creates a new GitHub Release (doesn't delete the previous)
+- Creates a new Pull Request with the new branch
 
 ### `gh releaser pr`
 
