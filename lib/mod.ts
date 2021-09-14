@@ -270,23 +270,45 @@ export async function getReleaseByTag(options: GetReleaseByTagOptions) {
   return await resp.json();
 }
 
+export async function getDraftReleaseByTag(options: GetReleaseByTagOptions) {
+  const { owner, repo, tag } = options;
+
+  const resp = await octono.request(
+    "GET /repos/{owner}/{repo}/releases",
+    {
+      owner,
+      repo,
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
+    },
+  );
+
+  const releases = await resp.json();
+
+  return releases.find((release) => release.tag_name === tag && release.draft);
+}
+
 export async function updateRelease(options: UpdateReleaseOptions) {
   const { owner, repo, name, body, draft, tag, releaseID } = options;
 
   // @ts-ignore: typings for this endpoint will be available
   // on the next Octono's release (0.0.6)
-  const resp = await octono.request("PATCH /repos/{owner}/{repo}/releases", {
-    owner,
-    repo,
-    name,
-    body,
-    draft,
-    tag_name: tag,
-    release_id: releaseID,
-    headers: {
-      authorization: `bearer ${await fetchGitHubToken()}`,
+  const resp = await octono.request(
+    "PATCH /repos/{owner}/{repo}/releases/{release_id}",
+    {
+      owner,
+      repo,
+      name,
+      body,
+      draft,
+      tag_name: tag,
+      release_id: releaseID,
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
     },
-  });
+  );
 
   return await resp.json();
 }
