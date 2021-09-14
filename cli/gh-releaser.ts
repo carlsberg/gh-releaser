@@ -1,5 +1,6 @@
 import { getOwnerAndRepo, yargs } from "./deps.ts";
 import { version } from "../version.ts";
+import { closeCommand } from "./cmd/close.ts";
 import { startCommand } from "./cmd/start.ts";
 import { updateCommand } from "./cmd/update.ts";
 import { prCommand } from "./cmd/pr.ts";
@@ -48,6 +49,7 @@ yargs()
     },
     startCommand,
   )
+  .command("close", "Closes the open release", {}, closeCommand)
   .command(
     "update <tag>",
     "Updates the open release's tag",

@@ -4,10 +4,14 @@ export {
   createRelease,
   findPullRequests,
   getBranch,
+  getDraftReleaseByTag,
   getOwnerAndRepo,
   getPullRequest,
+  getReleaseByTag,
+  mergePullRequest,
   openPullRequest,
   renameBranch,
+  updateRelease,
 } from "../lib/mod.ts";
 
 // x/yargs
