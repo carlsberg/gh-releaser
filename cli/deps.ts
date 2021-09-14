@@ -5,7 +5,9 @@ export {
   findPullRequests,
   getBranch,
   getOwnerAndRepo,
+  getPullRequest,
   openPullRequest,
+  renameBranch,
 } from "../lib/mod.ts";
 
 // x/yargs

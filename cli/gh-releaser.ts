@@ -1,6 +1,7 @@
 import { getOwnerAndRepo, yargs } from "./deps.ts";
 import { version } from "../version.ts";
 import { startCommand } from "./cmd/start.ts";
+import { updateCommand } from "./cmd/update.ts";
 import { prCommand } from "./cmd/pr.ts";
 
 export const DEFAULT_MAIN_BRANCH = "main";
@@ -46,6 +47,18 @@ yargs()
       });
     },
     startCommand,
+  )
+  .command(
+    "update <tag>",
+    "Updates the open release's tag",
+    {
+      tag: {
+        type: "string",
+        required: true,
+        describe: "The new tag",
+      },
+    },
+    updateCommand,
   )
   .command(
     "pr",
