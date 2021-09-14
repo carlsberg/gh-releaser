@@ -5,8 +5,8 @@ import { startCommand } from "./cmd/start.ts";
 import { updateCommand } from "./cmd/update.ts";
 import { prCommand } from "./cmd/pr.ts";
 
-export const DEFAULT_MAIN_BRANCH = "main";
-export const DEFAULT_DEVELOP_BRANCH = "develop";
+const DEFAULT_MAIN_BRANCH = "main";
+const DEFAULT_DEVELOP_BRANCH = "develop";
 
 const { owner, repo } = await getOwnerAndRepo();
 
