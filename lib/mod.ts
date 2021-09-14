@@ -34,6 +34,12 @@ export interface FindPullRequestOptions {
   label: string;
 }
 
+export interface GetPullRequestOptions {
+  owner: string;
+  repo: string;
+  number: number;
+}
+
 export interface GetBranchOptions {
   owner: string;
   repo: string;
@@ -157,6 +163,24 @@ export async function findPullRequests(options: FindPullRequestOptions) {
   return items;
 }
 
+export async function getPullRequest(options: GetPullRequestOptions) {
+  const { owner, repo, number } = options;
+
+  const resp = await octono.request(
+    "GET /repos/{owner}/{repo}/pulls/{pull_number}",
+    {
+      owner,
+      repo,
+      pull_number: number,
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
+    },
+  );
+
+  return await resp.json();
+}
+
 export async function createBranch(options: CreateBranchOptions) {
   const { owner, repo, branch, sha } = options;
 
@@ -194,15 +218,13 @@ export async function getBranch(options: GetBranchOptions) {
 export async function renameBranch(options: RenameBranchOptions) {
   const { owner, repo, branch, newName } = options;
 
-  const resp = await octono.request(
-    // @ts-ignore: typings for this endpoint will be available
-    // on the next Octono's release (0.0.6)
-    "POST /repos/{owner}/{repo}/branches/{branch}/rename",
+  const resp = await fetch(
+    // there's a known issue in Octono that causes this particular request
+    // to fail. using `fetch` as a temporary workaround
+    `https://api.github.com/repos/${owner}/${repo}/branches/${branch}/rename`,
     {
-      owner,
-      repo,
-      branch,
-      newName,
+      method: "POST",
+      body: JSON.stringify({ new_name: newName }),
       headers: {
         authorization: `bearer ${await fetchGitHubToken()}`,
       },
