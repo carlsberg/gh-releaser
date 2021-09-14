@@ -15,6 +15,6 @@ export async function prCommand(args: PRCommandArgs) {
   });
 
   if (pulls!.length > 0) {
-    console.log(`#${pulls![0].number}`);
+    console.log(pulls![0].number);
   }
 }
