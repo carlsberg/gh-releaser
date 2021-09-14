@@ -8,7 +8,15 @@ import { prCommand } from "./cmd/pr.ts";
 const DEFAULT_MAIN_BRANCH = "main";
 const DEFAULT_DEVELOP_BRANCH = "develop";
 
-const { owner, repo } = await getOwnerAndRepo();
+let owner = Deno.env.get("OWNER");
+let repo = Deno.env.get("REPO");
+
+if (!owner || !repo) {
+  const ownerAndRepo = await getOwnerAndRepo();
+
+  owner = ownerAndRepo.owner;
+  repo = ownerAndRepo.repo;
+}
 
 yargs()
   .scriptName("gh-releaser")
