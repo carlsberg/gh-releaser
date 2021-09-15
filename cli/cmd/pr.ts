@@ -14,7 +14,9 @@ export async function prCommand(args: PRCommandArgs) {
     label: "gh-releaser",
   });
 
-  if (pulls!.length > 0) {
-    console.log(pulls![0].number);
+  if (pulls!.length === 0) {
+    return;
   }
+
+  console.log(`${pulls![0].number}`);
 }
