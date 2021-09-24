@@ -32,6 +32,7 @@ export interface FindPullRequestOptions {
   owner: string;
   repo: string;
   label: string;
+  state: string;
 }
 
 export interface GetPullRequestOptions {
@@ -150,16 +151,19 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
 
 /* Searches open pull requests with a label */
 export async function findPullRequests(options: FindPullRequestOptions) {
-  const { owner, repo, label } = options;
+  const { owner, repo, label, state } = options;
 
-  const resp = await octono.paginated("GET /search/issues", {
-    q: `user:${owner} repo:${repo} label:${label} state:open`,
+  const resp = await octono.request("GET /repos/{owner}/{repo}/pulls", {
+    owner: owner,
+    repo: repo,
+    labels: label,
+    state: state,
     headers: {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
   });
 
-  const { items } = await resp.json();
+  const items = await resp.json();
 
   return items;
 }

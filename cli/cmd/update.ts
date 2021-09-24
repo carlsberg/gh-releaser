@@ -19,6 +19,7 @@ export async function updateCommand(args: UpdateCommandArgs) {
     owner,
     repo,
     label: "gh-releaser",
+    state: "open"
   });
 
   if (!prs || prs.length === 0) {

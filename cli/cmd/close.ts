@@ -16,7 +16,7 @@ export interface CloseCommandArgs {
 export async function closeCommand(args: CloseCommandArgs) {
   const { owner, repo, developBranch } = args;
 
-  const prs = await findPullRequests({ owner, repo, label: "gh-releaser" });
+  const prs = await findPullRequests({ owner, repo, label: "gh-releaser" , state:"open"});
 
   if (!prs || prs.length === 0) {
     throw new Error("couldn't find an open release Pull Request");
