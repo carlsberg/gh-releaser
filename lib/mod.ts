@@ -164,10 +164,8 @@ export async function findPullRequests(options: FindPullRequestOptions) {
 
   const items = await resp.json()
   
-  return items.filter(pr => {
-    const labelNames = pr.labels.map(label => label.name)
-    return labelNames.includes(label)
-  });
+  return items
+  .filter(pr => pr.labels.map(label => label.name).includes(label));
 }
 
 export async function getPullRequest(options: GetPullRequestOptions) {
