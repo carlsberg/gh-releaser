@@ -156,16 +156,18 @@ export async function findPullRequests(options: FindPullRequestOptions) {
   const resp = await octono.request("GET /repos/{owner}/{repo}/pulls", {
     owner: owner,
     repo: repo,
-    labels: label,
     state: state,
     headers: {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
   });
 
-  const items = await resp.json();
-
-  return items;
+  const items = await resp.json()
+  
+  return items.filter(pr => {
+    const labelNames = pr.labels.map(label => label.name)
+    return labelNames.includes(label)
+  });
 }
 
 export async function getPullRequest(options: GetPullRequestOptions) {
@@ -375,4 +377,9 @@ async function getRemoteOriginURL() {
   }
 
   return new TextDecoder().decode(await p.output());
+}
+
+
+function byLabelFilter(byLabelFilter: any) {
+
 }
