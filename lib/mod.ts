@@ -378,8 +378,3 @@ async function getRemoteOriginURL() {
 
   return new TextDecoder().decode(await p.output());
 }
-
-
-function byLabelFilter(byLabelFilter: any) {
-
-}
