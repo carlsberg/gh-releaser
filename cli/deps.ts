@@ -12,6 +12,7 @@ export {
   openPullRequest,
   renameBranch,
   updateRelease,
+  mergeBranch
 } from "../lib/mod.ts";
 
 // x/yargs

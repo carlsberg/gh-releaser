@@ -80,6 +80,13 @@ export interface UpdateReleaseOptions extends Partial<CreateReleaseOptions> {
   releaseID: number;
 }
 
+export interface MergeBranchOptions {
+  owner: string;
+  repo: string;
+  base: string;
+  head: string;
+}
+
 export async function openPullRequest(options: OpenPullRequestOptions) {
   const { owner, repo, base, head, title, body, label } = options;
 
@@ -135,18 +142,21 @@ export async function closePullRequest(options: ClosePullRequestOptions) {
 
 export async function mergePullRequest(options: MergePullRequestOptions) {
   const { owner, repo, number, commit } = options;
-
-  await octono.request("PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge", {
-    owner,
-    repo,
-    pull_number: number,
-    commit_title: commit.title,
-    commit_message: commit.message,
-    merge_method: "rebase",
-    headers: {
-      authorization: `bearer ${await fetchGitHubToken()}`,
+  const x = await octono.request(
+    "PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge",
+    {
+      owner,
+      repo,
+      pull_number: number,
+      commit_title: commit.title,
+      commit_message: commit.message,
+      merge_method: "rebase",
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
     },
-  });
+  );
+  console.log(x, await x.json());
 }
 
 /* Searches open pull requests with a label */
@@ -316,6 +326,28 @@ export async function updateRelease(options: UpdateReleaseOptions) {
   );
 
   return await resp.json();
+}
+
+/* Merges a repository branch into another */
+export async function mergeBranch(options: MergeBranchOptions) {
+  const { owner, repo, base, head } = options;
+
+  const resp = await fetch(
+    // there's a known issue in Octono that causes this particular request
+    // to fail. using `fetch` as a temporary workaround
+    `https://api.github.com/repos/${owner}/${repo}/merges`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        base,
+        head,
+      }),
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
+    },
+  );
+  console.log(resp, await resp.json());
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
