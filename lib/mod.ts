@@ -142,7 +142,8 @@ export async function closePullRequest(options: ClosePullRequestOptions) {
 
 export async function mergePullRequest(options: MergePullRequestOptions) {
   const { owner, repo, number, commit } = options;
-  const x = await octono.request(
+
+  await octono.request(
     "PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge",
     {
       owner,
@@ -156,7 +157,6 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
       },
     },
   );
-  console.log(x, await x.json());
 }
 
 /* Searches open pull requests with a label */
@@ -332,7 +332,7 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 export async function mergeBranch(options: MergeBranchOptions) {
   const { owner, repo, base, head } = options;
 
-  const resp = await fetch(
+  await fetch(
     // there's a known issue in Octono that causes this particular request
     // to fail. using `fetch` as a temporary workaround
     `https://api.github.com/repos/${owner}/${repo}/merges`,
@@ -347,7 +347,6 @@ export async function mergeBranch(options: MergeBranchOptions) {
       },
     },
   );
-  console.log(resp, await resp.json());
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
