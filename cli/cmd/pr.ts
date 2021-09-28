@@ -19,7 +19,5 @@ export async function prCommand(args: PRCommandArgs) {
     return;
   }
 
-  console.log(pulls)
-
   console.log(`${pulls![0].number}`);
 }
