@@ -63,8 +63,8 @@ export async function closeCommand(args: CloseCommandArgs) {
   await mergeBranch({
     owner,
     repo,
-    base: "refs/heads/develop",
-    head: "refs/heads/main",
+    base: `refs/heads/${developBranch}`,
+    head: `refs/heads/${mainBranchName}`,
   });
 
   console.log(`Synced ${mainBranchName} -> ${developBranch}`);
