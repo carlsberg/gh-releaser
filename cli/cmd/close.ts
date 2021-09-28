@@ -2,8 +2,8 @@ import {
   findPullRequests,
   getDraftReleaseByTag,
   getPullRequest,
+  mergeBranch,
   mergePullRequest,
-  openPullRequest,
   updateRelease,
 } from "../deps.ts";
 
@@ -16,7 +16,12 @@ export interface CloseCommandArgs {
 export async function closeCommand(args: CloseCommandArgs) {
   const { owner, repo, developBranch } = args;
 
-  const prs = await findPullRequests({ owner, repo, label: "gh-releaser" , state:"open"});
+  const prs = await findPullRequests({
+    owner,
+    repo,
+    label: "gh-releaser",
+    state: "open",
+  });
 
   if (!prs || prs.length === 0) {
     throw new Error("couldn't find an open release Pull Request");
@@ -55,24 +60,11 @@ export async function closeCommand(args: CloseCommandArgs) {
 
   console.log(`Published GitHub Release (${release.id}): ${release.html_url}`);
 
-  const syncPR = await openPullRequest({
+  await mergeBranch({
     owner,
     repo,
-    title: `Sync ${mainBranchName} -> ${developBranch}`,
-    body: "",
-    base: developBranch,
-    head: mainBranchName,
-  });
-
-  console.log(
-    `Created Pull Request to sync ${mainBranchName} -> ${developBranch}: ${pr.html_url}`,
-  );
-
-  await mergePullRequest({
-    owner,
-    repo,
-    number: syncPR.number,
-    commit: { title: `release: sync ${mainBranchName} -> ${developBranch}` },
+    base: `refs/heads/${developBranch}`,
+    head: `refs/heads/${mainBranchName}`,
   });
 
   console.log(`Synced ${mainBranchName} -> ${developBranch}`);
