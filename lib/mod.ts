@@ -162,10 +162,10 @@ export async function findPullRequests(options: FindPullRequestOptions) {
     },
   });
 
-  const items = await resp.json()
-  
+  const items = await resp.json();
+
   return items
-  .filter(pr => pr.labels.map(label => label.name).includes(label));
+    .filter((pr) => pr.labels.map((label) => label.name).includes(label));
 }
 
 export async function getPullRequest(options: GetPullRequestOptions) {
