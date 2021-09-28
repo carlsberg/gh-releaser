@@ -27,10 +27,10 @@ export async function closeCommand(args: CloseCommandArgs) {
     throw new Error("couldn't find an open release Pull Request");
   }
 
-  // // Get the full Pull Request object
+  // Get the full Pull Request object
   const pr = await getPullRequest({ owner, repo, number: prs[0].number });
 
-  // // Get current release branch name
+  // Get current release branch name
   const { head: { ref: releaseBranchName }, base: { ref: mainBranchName } } =
     pr;
 
