@@ -102,8 +102,8 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
     },
   });
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   const pr = await resp.json();
@@ -133,20 +133,22 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
 export async function closePullRequest(options: ClosePullRequestOptions) {
   const { owner, repo, number } = options;
 
-  const resp = await octono.request("PATCH /repos/{owner}/{repo}/pulls/{pull_number}", {
-    owner,
-    repo,
-    pull_number: number,
-    state: "closed",
-    headers: {
-      authorization: `bearer ${await fetchGitHubToken()}`,
+  const resp = await octono.request(
+    "PATCH /repos/{owner}/{repo}/pulls/{pull_number}",
+    {
+      owner,
+      repo,
+      pull_number: number,
+      state: "closed",
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
     },
-  });
+  );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
-
 }
 
 export async function mergePullRequest(options: MergePullRequestOptions) {
@@ -167,12 +169,11 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
-  console.log(await resp.json())
-
+  console.log(await resp.json());
 }
 
 /* Searches open pull requests with a label */
@@ -188,8 +189,8 @@ export async function findPullRequests(options: FindPullRequestOptions) {
     },
   });
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   const items = await resp.json();
@@ -213,8 +214,8 @@ export async function getPullRequest(options: GetPullRequestOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -233,8 +234,8 @@ export async function createBranch(options: CreateBranchOptions) {
     },
   });
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -255,8 +256,8 @@ export async function getBranch(options: GetBranchOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -278,8 +279,8 @@ export async function renameBranch(options: RenameBranchOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -300,8 +301,8 @@ export async function createRelease(options: CreateReleaseOptions) {
     },
   });
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -322,8 +323,8 @@ export async function getReleaseByTag(options: GetReleaseByTagOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -343,8 +344,8 @@ export async function getDraftReleaseByTag(options: GetReleaseByTagOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   const releases = await resp.json();
@@ -373,8 +374,8 @@ export async function updateRelease(options: UpdateReleaseOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
 
   return await resp.json();
@@ -400,10 +401,9 @@ export async function mergeBranch(options: MergeBranchOptions) {
     },
   );
 
-  if(!resp.ok){
-    throw new Error(JSON.stringify(resp.json()))
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
   }
-  
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
