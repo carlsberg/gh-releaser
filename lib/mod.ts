@@ -102,6 +102,10 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
     },
   });
 
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
   const pr = await resp.json();
 
   if (label) {
@@ -129,21 +133,28 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
 export async function closePullRequest(options: ClosePullRequestOptions) {
   const { owner, repo, number } = options;
 
-  await octono.request("PATCH /repos/{owner}/{repo}/pulls/{pull_number}", {
-    owner,
-    repo,
-    pull_number: number,
-    state: "closed",
-    headers: {
-      authorization: `bearer ${await fetchGitHubToken()}`,
+  const resp = await octono.request(
+    "PATCH /repos/{owner}/{repo}/pulls/{pull_number}",
+    {
+      owner,
+      repo,
+      pull_number: number,
+      state: "closed",
+      headers: {
+        authorization: `bearer ${await fetchGitHubToken()}`,
+      },
     },
-  });
+  );
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 }
 
 export async function mergePullRequest(options: MergePullRequestOptions) {
   const { owner, repo, number, commit } = options;
 
-  await octono.request(
+  const resp = await octono.request(
     "PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge",
     {
       owner,
@@ -157,6 +168,12 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
       },
     },
   );
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
+  console.log(await resp.json());
 }
 
 /* Searches open pull requests with a label */
@@ -171,6 +188,10 @@ export async function findPullRequests(options: FindPullRequestOptions) {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
   });
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 
   const items = await resp.json();
 
@@ -193,6 +214,10 @@ export async function getPullRequest(options: GetPullRequestOptions) {
     },
   );
 
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
   return await resp.json();
 }
 
@@ -208,6 +233,10 @@ export async function createBranch(options: CreateBranchOptions) {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
   });
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 
   return await resp.json();
 }
@@ -226,6 +255,10 @@ export async function getBranch(options: GetBranchOptions) {
       },
     },
   );
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 
   return await resp.json();
 }
@@ -246,6 +279,10 @@ export async function renameBranch(options: RenameBranchOptions) {
     },
   );
 
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
   return await resp.json();
 }
 
@@ -263,6 +300,10 @@ export async function createRelease(options: CreateReleaseOptions) {
       authorization: `bearer ${await fetchGitHubToken()}`,
     },
   });
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 
   return await resp.json();
 }
@@ -282,6 +323,10 @@ export async function getReleaseByTag(options: GetReleaseByTagOptions) {
     },
   );
 
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
   return await resp.json();
 }
 
@@ -298,6 +343,10 @@ export async function getDraftReleaseByTag(options: GetReleaseByTagOptions) {
       },
     },
   );
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 
   const releases = await resp.json();
 
@@ -325,6 +374,10 @@ export async function updateRelease(options: UpdateReleaseOptions) {
     },
   );
 
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
+
   return await resp.json();
 }
 
@@ -332,7 +385,7 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 export async function mergeBranch(options: MergeBranchOptions) {
   const { owner, repo, base, head } = options;
 
-  await fetch(
+  const resp = await fetch(
     // there's a known issue in Octono that causes this particular request
     // to fail. using `fetch` as a temporary workaround
     `https://api.github.com/repos/${owner}/${repo}/merges`,
@@ -347,6 +400,10 @@ export async function mergeBranch(options: MergeBranchOptions) {
       },
     },
   );
+
+  if (!resp.ok) {
+    throw new Error(JSON.stringify(resp.json()));
+  }
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
