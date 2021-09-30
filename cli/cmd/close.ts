@@ -2,8 +2,8 @@ import {
   findPullRequests,
   getDraftReleaseByTag,
   getPullRequest,
-  mergeBranch,
   mergePullRequest,
+  openPullRequest,
   updateRelease,
 } from "../deps.ts";
 
@@ -60,12 +60,26 @@ export async function closeCommand(args: CloseCommandArgs) {
 
   console.log(`Published GitHub Release (${release.id}): ${release.html_url}`);
 
-  await mergeBranch({
-    owner,
-    repo,
-    base: `refs/heads/${developBranch}`,
-    head: `refs/heads/${mainBranchName}`,
-  });
+  const syncPr = await openPullRequest(
+    {
+      base: `${developBranch}`,
+      head: `${mainBranchName}`,
+      body: "",
+      title: `Syncing ${mainBranchName} -> ${developBranch}`,
+      owner: owner,
+      repo: repo,
+      label: "gh-releaser",
+    },
+  );
+
+  mergePullRequest(
+    {
+      commit: { title: `chore: sync ${mainBranchName} -> ${developBranch}` },
+      number: syncPr.number,
+      repo: repo,
+      owner: owner,
+    },
+  );
 
   console.log(`Synced ${mainBranchName} -> ${developBranch}`);
   console.log("Done!");
