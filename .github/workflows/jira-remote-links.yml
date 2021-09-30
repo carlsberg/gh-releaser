@@ -1,20 +1,18 @@
-name: JIRA Remote Links
+name: Jira Remote Links
 
 on:
   issues:
+    types: [opened, edited, deleted, closed, reopened]
+  issue_comment:
+    types: [created, edited, deleted]
 
 jobs:
   sync:
-    name: JIRA Remote Links
+    name: Jira Remote Links
     runs-on: ubuntu-latest
     steps:
       - uses: carlsberg/jira-remote-link-action@v1
         with:
-          # URL for Jira instance (i.e. `example.atlassian.net`)
           jira-url: ${{ secrets.JIRA_URL }}
-
-          # Email for Jira account (i.e. `john.doe@example.com`)
           jira-email: ${{ secrets.JIRA_EMAIL }}
-
-          # Token for Jira account
           jira-token: ${{ secrets.JIRA_TOKEN }}
