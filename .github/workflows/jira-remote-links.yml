@@ -11,7 +11,7 @@ jobs:
     name: Jira Remote Links
     runs-on: ubuntu-latest
     steps:
-      - uses: carlsberg/jira-remote-link-action@v1
+      - uses: carlsberg/jira-remote-link-action@main
         with:
           jira-url: ${{ secrets.JIRA_URL }}
           jira-email: ${{ secrets.JIRA_EMAIL }}
