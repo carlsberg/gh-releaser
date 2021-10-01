@@ -162,7 +162,6 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
       pull_number: number,
       commit_title: commit.title,
       commit_message: commit.message,
-      merge_method: "rebase",
       headers: {
         authorization: `bearer ${await fetchGitHubToken()}`,
       },
