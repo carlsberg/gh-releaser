@@ -147,7 +147,7 @@ export async function closePullRequest(options: ClosePullRequestOptions) {
   );
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 }
 
@@ -162,7 +162,6 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
       pull_number: number,
       commit_title: commit.title,
       commit_message: commit.message,
-      merge_method: "rebase",
       headers: {
         authorization: `bearer ${await fetchGitHubToken()}`,
       },
@@ -170,7 +169,7 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
   );
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 
   console.log(await resp.json());
@@ -257,7 +256,7 @@ export async function getBranch(options: GetBranchOptions) {
   );
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 
   return await resp.json();
@@ -345,7 +344,7 @@ export async function getDraftReleaseByTag(options: GetReleaseByTagOptions) {
   );
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 
   const releases = await resp.json();
@@ -375,7 +374,7 @@ export async function updateRelease(options: UpdateReleaseOptions) {
   );
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 
   return await resp.json();
