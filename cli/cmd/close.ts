@@ -2,8 +2,8 @@ import {
   findPullRequests,
   getDraftReleaseByTag,
   getPullRequest,
-  mergePullRequest,
   MergeMethod,
+  mergePullRequest,
   openPullRequest,
   updateRelease,
 } from "../deps.ts";

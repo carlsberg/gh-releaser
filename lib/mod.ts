@@ -29,10 +29,10 @@ export interface MergePullRequestOptions {
   };
 }
 
-export enum MergeMethod{
+export enum MergeMethod {
   Rebase = "rebase",
   Squash = "squash",
-  Merge = "merge"
+  Merge = "merge",
 }
 
 export interface FindPullRequestOptions {

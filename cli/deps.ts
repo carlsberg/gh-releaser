@@ -8,12 +8,12 @@ export {
   getOwnerAndRepo,
   getPullRequest,
   getReleaseByTag,
-  mergePullRequest,
+  mergeBranch,
   MergeMethod,
+  mergePullRequest,
   openPullRequest,
   renameBranch,
   updateRelease,
-  mergeBranch
 } from "../lib/mod.ts";
 
 // x/yargs
