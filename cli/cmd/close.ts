@@ -3,6 +3,7 @@ import {
   getDraftReleaseByTag,
   getPullRequest,
   mergePullRequest,
+  MergeMethod,
   openPullRequest,
   updateRelease,
 } from "../deps.ts";
@@ -46,7 +47,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     owner,
     repo,
     number: pr.number,
-    mergeMethod: "rebase",
+    mergeMethod: MergeMethod.Rebase,
     commit: { title: `release: ${tag}` },
   });
 
@@ -77,7 +78,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     {
       commit: { title: `chore: sync ${mainBranchName} -> ${developBranch}` },
       number: syncPr.number,
-      mergeMethod: "rebase",
+      mergeMethod: MergeMethod.Rebase,
       repo: repo,
       owner: owner,
     },

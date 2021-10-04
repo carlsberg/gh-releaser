@@ -22,11 +22,17 @@ export interface MergePullRequestOptions {
   owner: string;
   repo: string;
   number: number;
-  mergeMethod: string;
+  mergeMethod: MergeMethod;
   commit: {
     title: string;
     message?: string;
   };
+}
+
+export enum MergeMethod{
+  Rebase = "rebase",
+  Squash = "squash",
+  Merge = "merge"
 }
 
 export interface FindPullRequestOptions {

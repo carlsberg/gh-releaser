@@ -9,6 +9,7 @@ export {
   getPullRequest,
   getReleaseByTag,
   mergePullRequest,
+  MergeMethod,
   openPullRequest,
   renameBranch,
   updateRelease,
