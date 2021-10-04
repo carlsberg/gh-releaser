@@ -46,6 +46,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     owner,
     repo,
     number: pr.number,
+    mergeMethod: "rebase",
     commit: { title: `release: ${tag}` },
   });
 
@@ -76,6 +77,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     {
       commit: { title: `chore: sync ${mainBranchName} -> ${developBranch}` },
       number: syncPr.number,
+      mergeMethod: "rebase",
       repo: repo,
       owner: owner,
     },
