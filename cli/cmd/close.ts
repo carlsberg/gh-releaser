@@ -2,6 +2,7 @@ import {
   findPullRequests,
   getDraftReleaseByTag,
   getPullRequest,
+  MergeMethod,
   mergePullRequest,
   openPullRequest,
   updateRelease,
@@ -46,6 +47,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     owner,
     repo,
     number: pr.number,
+    mergeMethod: MergeMethod.Rebase,
     commit: { title: `release: ${tag}` },
   });
 
@@ -76,6 +78,7 @@ export async function closeCommand(args: CloseCommandArgs) {
     {
       commit: { title: `chore: sync ${mainBranchName} -> ${developBranch}` },
       number: syncPr.number,
+      mergeMethod: MergeMethod.Rebase,
       repo: repo,
       owner: owner,
     },

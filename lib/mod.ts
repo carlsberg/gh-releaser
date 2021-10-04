@@ -22,10 +22,17 @@ export interface MergePullRequestOptions {
   owner: string;
   repo: string;
   number: number;
+  mergeMethod: MergeMethod;
   commit: {
     title: string;
     message?: string;
   };
+}
+
+export enum MergeMethod {
+  Rebase = "rebase",
+  Squash = "squash",
+  Merge = "merge",
 }
 
 export interface FindPullRequestOptions {
@@ -103,7 +110,7 @@ export async function openPullRequest(options: OpenPullRequestOptions) {
   });
 
   if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+    throw new Error(JSON.stringify(await resp.json()));
   }
 
   const pr = await resp.json();
@@ -152,7 +159,7 @@ export async function closePullRequest(options: ClosePullRequestOptions) {
 }
 
 export async function mergePullRequest(options: MergePullRequestOptions) {
-  const { owner, repo, number, commit } = options;
+  const { owner, repo, number, commit, mergeMethod } = options;
 
   const resp = await octono.request(
     "PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge",
@@ -162,6 +169,7 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
       pull_number: number,
       commit_title: commit.title,
       commit_message: commit.message,
+      merge_method: mergeMethod,
       headers: {
         authorization: `bearer ${await fetchGitHubToken()}`,
       },
