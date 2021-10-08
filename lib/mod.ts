@@ -88,8 +88,6 @@ export interface UpdateReleaseOptions extends Partial<CreateReleaseOptions> {
 }
 
 export interface MergeBranchOptions {
-  owner: string;
-  repo: string;
   base: string;
   head: string;
 }
@@ -389,28 +387,14 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 }
 
 /* Merges a repository branch into another */
-export async function mergeBranch(options: MergeBranchOptions) {
-  const { owner, repo, base, head } = options;
+export function mergeBranch(options: MergeBranchOptions) {
+  const { base, head } = options;
 
-  const resp = await fetch(
-    // there's a known issue in Octono that causes this particular request
-    // to fail. using `fetch` as a temporary workaround
-    `https://api.github.com/repos/${owner}/${repo}/merges`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        base,
-        head,
-      }),
-      headers: {
-        authorization: `bearer ${await fetchGitHubToken()}`,
-      },
-    },
-  );
-
-  if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
-  }
+  Deno.run({ cmd: ["git", "checkout", head] });
+  Deno.run({ cmd: ["git", "pull", head, "--rebase"] });
+  Deno.run({ cmd: ["git", "checkout", base] });
+  Deno.run({ cmd: ["git", "merge", head] });
+  Deno.run({ cmd: ["git", "push", base] });
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
