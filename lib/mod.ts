@@ -88,6 +88,8 @@ export interface UpdateReleaseOptions extends Partial<CreateReleaseOptions> {
 }
 
 export interface MergeBranchOptions {
+  owner: string;
+  repo: string;
   base: string;
   head: string;
 }
@@ -388,13 +390,73 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 
 /* Merges a repository branch into another */
 export function mergeBranch(options: MergeBranchOptions) {
-  const { base, head } = options;
+  const { base, head, repo } = options;
+  const dir = makeTempDir();
+  const innerDir = dir + "/" + repo;
+  gitClone(dir)
+    .then(() =>
+      gitCheckout(base, innerDir)
+        .then(() =>
+          gitRebase(head, innerDir)
+            .then(() => gitPush(base, innerDir))
+        )
+    ).finally(() => removeDir(dir));
+}
 
-  Deno.run({ cmd: ["git", "checkout", head] });
-  Deno.run({ cmd: ["git", "pull", head, "--rebase"] });
-  Deno.run({ cmd: ["git", "checkout", base] });
-  Deno.run({ cmd: ["git", "merge", head] });
-  Deno.run({ cmd: ["git", "push", base] });
+function makeTempDir() {
+  return Deno.makeTempDirSync();
+}
+
+async function removeDir(dir: string) {
+  return await Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
+}
+
+async function gitClone(dir: string) {
+  const remoteOriginUrl =
+    "https://github.com/CarlsbergGBS/cx-ecommerce-graphql-lambda.git";
+  const process = Deno.run({
+    cmd: ["git", "clone", remoteOriginUrl],
+    cwd: dir,
+  });
+
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to clone repo ${remoteOriginUrl}`);
+  }
+}
+
+async function gitCheckout(branch: string, dir?: string) {
+  const process = Deno.run({ cmd: ["git", "checkout", branch], cwd: dir });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to checkout ${branch} branch`);
+  }
+}
+
+async function gitRebase(head: string, dir?: string) {
+  const process = Deno.run({
+    cmd: ["git", "rebase", "origin/" + head],
+    cwd: dir,
+  });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to checkout ${head} branch`);
+  }
+}
+
+async function gitPush(branch: string, dir?: string) {
+  const process = Deno.run({
+    cmd: ["git", "push", "origin", branch],
+    cwd: dir,
+  });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to push ${branch} branch`);
+  }
 }
 
 /* Fetches a GitHub token from the environment or GitHub CLI */
