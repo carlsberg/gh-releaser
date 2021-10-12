@@ -390,26 +390,69 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 
 /* Merges a repository branch into another */
 export async function mergeBranch(options: MergeBranchOptions) {
-  const { owner, repo, base, head } = options;
+  const { base, head, owner, repo } = options;
+  const dir = makeTempDir();
+  const innerDir = dir + "/" + repo;
 
-  const resp = await fetch(
-    // there's a known issue in Octono that causes this particular request
-    // to fail. using `fetch` as a temporary workaround
-    `https://api.github.com/repos/${owner}/${repo}/merges`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        base,
-        head,
-      }),
-      headers: {
-        authorization: `bearer ${await fetchGitHubToken()}`,
-      },
-    },
-  );
+  await gitClone(dir, owner, repo);
+  await gitCheckout(base, innerDir);
+  await gitRebase(head, innerDir);
+  await gitPush(base, innerDir);
+  removeDir(dir);
+}
 
-  if (!resp.ok) {
-    throw new Error(JSON.stringify(resp.json()));
+function makeTempDir() {
+  return Deno.makeTempDirSync();
+}
+
+function removeDir(dir: string) {
+  return Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
+}
+
+async function gitClone(dir: string, owner: string, repo: string) {
+  const remoteOriginUrl = `git@github.com:${owner}/${repo}.git`;
+  const process = Deno.run({
+    cmd: ["git", "clone", remoteOriginUrl],
+    cwd: dir,
+  });
+
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to clone repo ${remoteOriginUrl}`);
+  }
+}
+
+async function gitCheckout(branch: string, dir?: string) {
+  const process = Deno.run({ cmd: ["git", "checkout", branch], cwd: dir });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to checkout ${branch} branch`);
+  }
+}
+
+async function gitRebase(head: string, dir?: string) {
+  const process = Deno.run({
+    cmd: ["git", "rebase", "origin/" + head],
+    cwd: dir,
+  });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to checkout ${head} branch`);
+  }
+}
+
+async function gitPush(branch: string, dir?: string) {
+  const process = Deno.run({
+    cmd: ["git", "push", "origin", branch],
+    cwd: dir,
+  });
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to push ${branch} branch`);
   }
 }
 
