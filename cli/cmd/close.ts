@@ -62,7 +62,12 @@ export async function closeCommand(args: CloseCommandArgs) {
 
   console.log(`Published GitHub Release (${release.id}): ${release.html_url}`);
 
-  mergeBranch({ base: developBranch, head: mainBranchName });
+  mergeBranch({
+    base: developBranch,
+    head: mainBranchName,
+    owner: owner,
+    repo: repo,
+  });
 
   console.log(`Synced ${mainBranchName} -> ${developBranch}`);
   console.log("Done!");

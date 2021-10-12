@@ -389,31 +389,28 @@ export async function updateRelease(options: UpdateReleaseOptions) {
 }
 
 /* Merges a repository branch into another */
-export function mergeBranch(options: MergeBranchOptions) {
-  const { base, head, repo } = options;
+export async function mergeBranch(options: MergeBranchOptions) {
+  const { base, head, owner, repo } = options;
   const dir = makeTempDir();
   const innerDir = dir + "/" + repo;
-  gitClone(dir)
-    .then(() =>
-      gitCheckout(base, innerDir)
-        .then(() =>
-          gitRebase(head, innerDir)
-            .then(() => gitPush(base, innerDir))
-        )
-    ).finally(() => removeDir(dir));
+
+  await gitClone(dir, owner, repo);
+  await gitCheckout(base, innerDir);
+  await gitRebase(head, innerDir);
+  await gitPush(base, innerDir);
+  removeDir(dir);
 }
 
 function makeTempDir() {
   return Deno.makeTempDirSync();
 }
 
-async function removeDir(dir: string) {
-  return await Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
+function removeDir(dir: string) {
+  return Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
 }
 
-async function gitClone(dir: string) {
-  const remoteOriginUrl =
-    `git@github.com:${owner}/${repo}.git`;
+async function gitClone(dir: string, owner: string, repo: string) {
+  const remoteOriginUrl = `git@github.com:${owner}/${repo}.git`;
   const process = Deno.run({
     cmd: ["git", "clone", remoteOriginUrl],
     cwd: dir,
