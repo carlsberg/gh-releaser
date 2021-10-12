@@ -413,7 +413,7 @@ async function removeDir(dir: string) {
 
 async function gitClone(dir: string) {
   const remoteOriginUrl =
-    "https://github.com/CarlsbergGBS/cx-ecommerce-graphql-lambda.git";
+    `git@github.com:${owner}/${repo}.git`;
   const process = Deno.run({
     cmd: ["git", "clone", remoteOriginUrl],
     cwd: dir,
