@@ -408,9 +408,8 @@ function removeDir(dir: string) {
 }
 
 async function gitClone(dir: string, owner: string, repo: string) {
-
   const process = Deno.run({
-    cmd: ["gh","repo", "clone", `https://github.com/${owner}/${repo}`],
+    cmd: ["gh", "repo", "clone", `https://github.com/${owner}/${repo}`],
     cwd: dir,
   });
 
