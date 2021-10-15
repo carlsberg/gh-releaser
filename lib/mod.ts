@@ -410,7 +410,7 @@ function removeDir(dir: string) {
 async function gitClone(dir: string, owner: string, repo: string) {
   const remoteOriginUrl = `git@github.com:${owner}/${repo}.git`;
   const process = Deno.run({
-    cmd: ["git", "clone", remoteOriginUrl],
+    cmd: ["gh","repo", "clone", `${owner}/${repo}`],
     cwd: dir,
   });
 
@@ -438,7 +438,7 @@ async function gitRebase(head: string, dir?: string) {
   const { code } = await process.status();
 
   if (code !== 0) {
-    throw new Error(`failed to checkout ${head} branch`);
+    throw new Error(`failed to rebase ${head} branch`);
   }
 }
 
