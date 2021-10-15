@@ -408,16 +408,15 @@ function removeDir(dir: string) {
 }
 
 async function gitClone(dir: string, owner: string, repo: string) {
-  const remoteOriginUrl = `git@github.com:${owner}/${repo}.git`;
   const process = Deno.run({
-    cmd: ["gh","repo", "clone", `${owner}/${repo}`],
+    cmd: ["gh", "repo", "clone", `https://github.com/${owner}/${repo}`],
     cwd: dir,
   });
 
   const { code } = await process.status();
 
   if (code !== 0) {
-    throw new Error(`failed to clone repo ${remoteOriginUrl}`);
+    throw new Error(`failed to clone repo https://github.com/${owner}/${repo}`);
   }
 }
 
