@@ -179,8 +179,6 @@ export async function mergePullRequest(options: MergePullRequestOptions) {
   if (!resp.ok) {
     throw new Error(JSON.stringify(await resp.json()));
   }
-
-  console.log(await resp.json());
 }
 
 /* Searches open pull requests with a label */
