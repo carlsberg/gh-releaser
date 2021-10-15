@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 RELEASE_BRANCH=release/$(git semver next)
 

@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 mkdir bin
 deno compile -A --output bin/gh-releaser --target x86_64-unknown-linux-gnu cli/gh-releaser.ts
