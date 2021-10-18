@@ -393,10 +393,11 @@ export async function mergeBranch(options: MergeBranchOptions) {
   const innerDir = dir + "/" + repo;
 
   await gitConfig(
+    dir,
     "http.https://github.com/.extraheader",
     await fetchGitHubTokenHeader(),
   );
-  await gitConfig("url.https://github.com/.insteadOf", "git@github.com:");
+  await gitConfig(dir, "url.https://github.com/.insteadOf", "git@github.com:");
 
   await gitClone(dir, owner, repo);
   await gitCheckout(base, innerDir);
@@ -414,7 +415,7 @@ function removeDir(dir: string) {
   return Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
 }
 
-async function gitConfig(key: string, value: string) {
+async function gitConfig(dir: string, key: string, value: string) {
   const process = Deno.run({
     cmd: ["git", "config", "--local", key, value],
     cwd: dir,
