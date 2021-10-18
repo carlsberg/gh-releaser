@@ -417,7 +417,7 @@ function removeDir(dir: string) {
 
 async function gitConfig(dir: string, key: string, value: string) {
   const process = Deno.run({
-    cmd: ["git", "config", "--local", key, value],
+    cmd: ["git", "config", "--global", key, value],
     cwd: dir,
   });
 
