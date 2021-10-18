@@ -1,4 +1,4 @@
-import { Octono } from "./deps.ts";
+import { encodeBase64, Octono } from "./deps.ts";
 
 const octono = new Octono();
 
@@ -392,10 +392,17 @@ export async function mergeBranch(options: MergeBranchOptions) {
   const dir = makeTempDir();
   const innerDir = dir + "/" + repo;
 
+  await gitConfig(
+    "http.https://github.com/.extraheader",
+    await fetchGitHubTokenHeader(),
+  );
+  await gitConfig("url.https://github.com/.insteadOf", "git@github.com:");
+
   await gitClone(dir, owner, repo);
   await gitCheckout(base, innerDir);
   await gitRebase(head, innerDir);
   await gitPush(base, innerDir);
+
   removeDir(dir);
 }
 
@@ -407,10 +414,27 @@ function removeDir(dir: string) {
   return Deno.run({ cmd: ["rm", "-rf"], cwd: dir });
 }
 
-async function gitClone(dir: string, owner: string, repo: string) {
-
+async function gitConfig(key: string, value: string) {
   const process = Deno.run({
-    cmd: ["gh", "repo", "clone", `https://${await fetchGitHubToken()}@github.com/${owner}/${repo}`],
+    cmd: ["git", "config", "--local", key, value],
+    cwd: dir,
+  });
+
+  const { code } = await process.status();
+
+  if (code !== 0) {
+    throw new Error(`failed to set git config for ${key}`);
+  }
+}
+
+async function gitClone(dir: string, owner: string, repo: string) {
+  const process = Deno.run({
+    cmd: [
+      "gh",
+      "repo",
+      "clone",
+      `https://${await fetchGitHubToken()}@github.com/${owner}/${repo}`,
+    ],
     cwd: dir,
   });
 
@@ -477,6 +501,13 @@ export async function fetchGitHubToken() {
   }
 
   return new TextDecoder().decode(await p.output());
+}
+
+async function fetchGitHubTokenHeader() {
+  const token = fetchGitHubToken();
+  const basicCredential = encodeBase64(`x-access-token:${token}`);
+
+  return `AUTHORIZATION: basic ${basicCredential}`;
 }
 
 export async function getOwnerAndRepo() {
