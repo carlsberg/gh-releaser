@@ -7,12 +7,12 @@ export interface PRCommandArgs {
 
 export async function prCommand(args: PRCommandArgs) {
   const { owner, repo } = args;
- 
+
   const pulls = await findPullRequests({
     owner,
     repo,
     label: "gh-releaser",
-    state: "open"
+    state: "open",
   });
 
   if (pulls!.length === 0) {
