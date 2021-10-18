@@ -2,7 +2,7 @@
 set -e
 
 repo="carlsberg/gh-releaser"
-tag="0.4.9"
+tag="0.4.10"
 exe="gh-releaser"
 extensionPath="$(dirname "$0")"
 
