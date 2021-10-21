@@ -12,10 +12,11 @@ export interface CloseCommandArgs {
   owner: string;
   repo: string;
   developBranch: string;
+  skipMerge: boolean;
 }
 
 export async function closeCommand(args: CloseCommandArgs) {
-  const { owner, repo, developBranch } = args;
+  const { owner, repo, developBranch, skipMerge } = args;
 
   const prs = await findPullRequests({
     owner,
@@ -43,15 +44,17 @@ export async function closeCommand(args: CloseCommandArgs) {
     throw new Error(`couldn't find a draft release for tag ${tag}`);
   }
 
-  await mergePullRequest({
-    owner,
-    repo,
-    number: pr.number,
-    mergeMethod: MergeMethod.Rebase,
-    commit: { title: `release: ${tag}` },
-  });
+  if (!skipMerge) {
+    await mergePullRequest({
+      owner,
+      repo,
+      number: pr.number,
+      mergeMethod: MergeMethod.Rebase,
+      commit: { title: `release: ${tag}` },
+    });
 
-  console.log(`Merged Pull Request: #${pr.number}`);
+    console.log(`Merged Pull Request: #${pr.number}`);
+  }
 
   await updateRelease({
     owner,
