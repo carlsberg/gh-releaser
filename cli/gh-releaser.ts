@@ -63,6 +63,11 @@ yargs()
       describe: "Repository's develop branch",
       default: DEFAULT_DEVELOP_BRANCH,
     },
+    "skip-merge": {
+      type: "boolean",
+      describe: "Skips merge process from MAIN_BRAMCH to DEVELOP_BRANCH",
+      default: false,
+    },
   }, closeCommand)
   .command(
     "update <tag>",
