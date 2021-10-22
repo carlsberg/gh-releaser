@@ -44,17 +44,15 @@ export async function closeCommand(args: CloseCommandArgs) {
     throw new Error(`couldn't find a draft release for tag ${tag}`);
   }
 
-  if (!skipMerge) {
-    await mergePullRequest({
-      owner,
-      repo,
-      number: pr.number,
-      mergeMethod: MergeMethod.Rebase,
-      commit: { title: `release: ${tag}` },
-    });
+  await mergePullRequest({
+    owner,
+    repo,
+    number: pr.number,
+    mergeMethod: MergeMethod.Rebase,
+    commit: { title: `release: ${tag}` },
+  });
 
-    console.log(`Merged Pull Request: #${pr.number}`);
-  }
+  console.log(`Merged Pull Request: #${pr.number}`);
 
   await updateRelease({
     owner,
@@ -65,13 +63,16 @@ export async function closeCommand(args: CloseCommandArgs) {
 
   console.log(`Published GitHub Release (${release.id}): ${release.html_url}`);
 
-  mergeBranch({
-    base: developBranch,
-    head: mainBranchName,
-    owner: owner,
-    repo: repo,
-  });
+  if (!skipMerge) {
+    mergeBranch({
+      base: developBranch,
+      head: mainBranchName,
+      owner: owner,
+      repo: repo,
+    });
 
-  console.log(`Synced ${mainBranchName} -> ${developBranch}`);
+    console.log(`Synced ${mainBranchName} -> ${developBranch}`);
+  }
+
   console.log("Done!");
 }
