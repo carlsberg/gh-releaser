@@ -56,7 +56,7 @@ export async function startCommand(args: StartCommandArgs) {
   const pr = await openPullRequest({
     owner,
     repo,
-    title: `Release ${tag}`,
+    title: `bump: release ${tag}`,
     body: `:bookmark: Created [${tag} release](${release.html_url})`,
     base: mainBranchName,
     head: releaseBranchName,
